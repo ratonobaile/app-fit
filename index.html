@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVO Pulse - Academia, Saúde & Educação</title>
+    
+    <!-- PWA Manifest & Meta Tags Mobile -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0e17">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="EVO Pulse">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/10832/10832486.png">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CSS Externo -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- SPLASH SCREEN -->
+    <div id="splash-screen">
+        <div class="logo-container">
+            <i class="fa-solid fa-bolt"></i>
+        </div>
+        <h1 class="app-title">EVO PULSE</h1>
+        <p class="app-subtitle">Academia, Saúde & Educação</p>
+        <div class="loader-spinner"></div>
+        <p class="motivational-quote">"Sua evolução começa hoje."</p>
+    </div>
+
+    <!-- WRAPPER RESPONSIVO (Layout App no Mobile / Dashboard no PC) -->
+    <div class="app-layout">
+
+        <!-- BARRA LATERAL (Desktop) / NAVEGAÇÃO INFERIOR (Mobile) -->
+        <nav class="navigation-bar">
+            <div class="brand-header">
+                <i class="fa-solid fa-bolt brand-icon"></i>
+                <span class="brand-name">EVO PULSE</span>
+            </div>
+
+            <div class="nav-links">
+                <a href="#" class="nav-item active" onclick="switchPage('page-dashboard', this)">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Início</span>
+                </a>
+                <a href="#" class="nav-item" onclick="switchPage('page-workout', this)">
+                    <i class="fa-solid fa-dumbbell"></i>
+                    <span>Treino</span>
+                </a>
+                <a href="#" class="nav-item fab-item" onclick="toggleModal(true)">
+                    <div class="fab-btn">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                    <span>Registrar</span>
+                </a>
+                <a href="#" class="nav-item" onclick="switchPage('page-diet', this)">
+                    <i class="fa-solid fa-apple-whole"></i>
+                    <span>Dieta</span>
+                </a>
+                <a href="#" class="nav-item" onclick="switchPage('page-evolution', this)">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Evolução</span>
+                </a>
+                <a href="#" class="nav-item desktop-only" onclick="switchPage('page-coach', this)">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>Coach AI</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- ÁREA PRINCIPAL DE CONTEÚDO -->
+        <main class="main-content">
+
+            <!-- CABEÇALHO GLOBAL -->
+            <header class="app-header" id="app-header">
+                <div class="user-greeting">
+                    <div class="avatar" id="header-avatar">?</div>
+                    <div>
+                        <span class="user-subtext">Bem-vindo(a),</span>
+                        <h4 id="header-user-name" class="user-name">Usuário</h4>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="streak-badge"><i class="fa-solid fa-fire"></i> <span id="streak-count">0</span> dias</div>
+                    <button class="icon-btn mobile-only" onclick="switchPage('page-coach')">
+                        <i class="fa-solid fa-robot icon-purple"></i>
+                    </button>
+                    <button class="icon-btn" onclick="resetAppData()" title="Reiniciar Dados">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- 1. CADASTRO & ONBOARDING -->
+            <div id="page-onboarding" class="page active">
+                <div id="step-1" class="onboarding-card">
+                    <h2 class="section-title">Configure seu Perfil</h2>
+                    <p class="section-subtitle">Informe seus dados reais para começar a acompanhar sua jornada.</p>
+
+                    <div class="form-group">
+                        <label class="form-label">Nome Completo</label>
+                        <input type="text" id="input-name" class="form-input" placeholder="Seu nome">
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Idade</label>
+                            <input type="number" id="input-age" class="form-input" placeholder="Ex: 22">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sexo</label>
+                            <select id="input-gender" class="form-select">
+                                <option value="" disabled selected>Selecione</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Feminino</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Peso Atual (kg)</label>
+                            <input type="number" id="input-weight" class="form-input" placeholder="Ex: 70" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Altura (cm)</label>
+                            <input type="number" id="input-height" class="form-input" placeholder="Ex: 175">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Nível de Experiência</label>
+                        <select id="input-exp" class="form-select">
+                            <option value="" disabled selected>Selecione</option>
+                            <option value="Iniciante">Iniciante (&lt; 6 meses)</option>
+                            <option value="Intermediário">Intermediário (6m a 2 anos)</option>
+                            <option value="Avançado">Avançado (&gt; 2 anos)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Treinos por Semana</label>
+                            <input type="number" id="input-days" class="form-input" placeholder="Ex: 4">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Duração Média (min)</label>
+                            <input type="number" id="input-duration" class="form-input" placeholder="Ex: 60">
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" onclick="goToStep(2)">Continuar <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div id="step-2" class="onboarding-card hidden">
+                    <h2 class="section-title">Qual é o seu Principal Objetivo?</h2>
+                    <p class="section-subtitle">Toda a experiência do aplicativo será ajustada de acordo com esta meta.</p>
+
+                    <div class="cards-grid">
+                        <div class="objective-card" onclick="selectObjective(this, 'Perder Peso')">
+                            <div class="icon">🔥</div>
+                            <div class="title">Perder Peso / Gordura</div>
+                        </div>
+                        <div class="objective-card" onclick="selectObjective(this, 'Ganhar Massa Muscular')">
+                            <div class="icon">💪</div>
+                            <div class="title">Ganhar Massa Muscular</div>
+                        </div>
+                        <div class="objective-card" onclick="selectObjective(this, 'Aumentar Força')">
+                            <div class="icon">🏋️</div>
+                            <div class="title">Aumentar Força</div>
+                        </div>
+                        <div class="objective-card" onclick="selectObjective(this, 'Definir o Corpo')">
+                            <div class="icon">✨</div>
+                            <div class="title">Definir o Corpo</div>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" onclick="finishOnboarding()">Finalizar e Abrir Painel</button>
+                </div>
+            </div>
+
+            <!-- 2. DASHBOARD PRINCIPAL -->
+            <div id="page-dashboard" class="page">
+                <div class="dashboard-grid">
+                    
+                    <!-- Resumo Perfil & IMC -->
+                    <div class="metric-card bg-profile">
+                        <div class="card-header-sm">
+                            <span class="card-title"><i class="fa-solid fa-user-check icon-green"></i> Resumo Físico</span>
+                            <span id="dash-goal-badge" class="badge-goal">Nenhum</span>
+                        </div>
+                        <div class="profile-stats">
+                            <div>
+                                <div class="weight-display" id="dash-weight">-- kg</div>
+                                <div class="weight-subtext">Meta: <span id="dash-target-weight">-- kg</span></div>
+                            </div>
+                            <div class="text-right">
+                                <div class="bmi-display" id="dash-bmi">--</div>
+                                <div class="bmi-subtext">IMC Educativo <i class="fa-solid fa-circle-info" onclick="alert('O IMC é uma métrica estimativa educativa que não substitui a avaliação da composição corporal por um profissional.')"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidratação -->
+                    <div class="metric-card">
+                        <div class="card-header-sm">
+                            <span class="card-title"><i class="fa-solid fa-droplet icon-blue"></i> Hidratação</span>
+                            <button class="btn-text-action" onclick="addWater(250)">+250ml</button>
+                        </div>
+                        <div class="water-container">
+                            <div class="water-bottle">
+                                <div class="water-fill" id="water-fill-bar" style="height: 0%;"></div>
+                            </div>
+                            <div class="water-info">
+                                <div class="water-value"><span id="water-current">0.0</span> L / <span id="water-target">0.0</span> L</div>
+                                <p class="water-subtext">Meta calculada para seu peso e rotina.</p>
+                                <button class="btn-primary btn-sm" onclick="addWater(500)"><i class="fa-solid fa-plus"></i> Registrar 500ml</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico de Evolução de Peso -->
+                    <div class="metric-card span-2">
+                        <div class="card-header-sm">
+                            <span class="card-title"><i class="fa-solid fa-chart-line icon-cyan"></i> Histórico de Peso</span>
+                            <span class="card-subtext">Registros Recentes</span>
+                        </div>
+                        <canvas id="weightChart" height="100"></canvas>
+                    </div>
+
+                    <!-- Macros Inteligentes -->
+                    <div class="metric-card span-2">
+                        <div class="card-header-sm">
+                            <span class="card-title"><i class="fa-solid fa-utensils icon-orange"></i> Plano Estimado de Macros</span>
+                        </div>
+                        <div id="macros-container">
+                            <p class="empty-state">Preencha seu cadastro para gerar suas estimativas nutricionais.</p>
+                        </div>
+                        <div class="disclaimer-box">
+                            <i class="fa-solid fa-triangle-exclamation disclaimer-icon"></i>
+                            <span><strong>Aviso Educativo:</strong> Os cálculos nutricionais são estimativas e não substituem o acompanhamento de nutricionista ou médico.</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 3. PLANO ALIMENTAR -->
+            <div id="page-diet" class="page">
+                <h2 class="section-title">Meu Plano Alimentar</h2>
+                <p class="section-subtitle">Sugestões de refeições estruturadas para o seu objetivo.</p>
+
+                <div id="diet-content" class="diet-grid">
+                    <p class="empty-state">Preencha seu cadastro inicial para visualizar o plano recomendado.</p>
+                </div>
+            </div>
+
+            <!-- 4. CONTROLE DE TREINO -->
+            <div id="page-workout" class="page">
+                <h2 class="section-title">Meu Treino</h2>
+                <p class="section-subtitle">Registre e acompanhe a evolução de cargas dos seus exercícios.</p>
+
+                <div class="dashboard-grid">
+                    <div class="metric-card span-2">
+                        <div class="card-header-sm">
+                            <span class="card-title"><i class="fa-solid fa-dumbbell icon-green"></i> Evolução de Carga</span>
+                        </div>
+                        <canvas id="workoutChart" height="100"></canvas>
+                    </div>
+
+                    <div class="metric-card span-2">
+                        <h3 class="workout-title">Registrar Novo Exercício</h3>
+                        <div class="grid-3">
+                            <input type="text" id="ex-name" class="form-input" placeholder="Exercício (ex: Supino)">
+                            <input type="number" id="ex-weight" class="form-input" placeholder="Carga (kg)">
+                            <input type="number" id="ex-reps" class="form-input" placeholder="Reps">
+                        </div>
+                        <button class="btn-primary" onclick="registerExercise()"><i class="fa-solid fa-plus"></i> Adicionar Exercício</button>
+
+                        <div id="exercise-list" class="exercise-list">
+                            <p class="empty-state">Nenhum exercício registrado ainda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. EVOLUÇÃO & CONQUISTAS -->
+            <div id="page-evolution" class="page">
+                <h2 class="section-title">Minha Evolução</h2>
+                <p class="section-subtitle">Acompanhe suas metas e histórico de progresso.</p>
+
+                <div class="dashboard-grid">
+                    <div class="metric-card span-2">
+                        <h3 class="evolution-subtitle">Conquistas & Metas</h3>
+                        <div class="badges-row">
+                            <div class="badge-item badge-green" id="badge-streak">
+                                <div class="badge-icon">🏆</div>
+                                <div class="badge-title">Primeiro Passo</div>
+                            </div>
+                            <div class="badge-item badge-cyan" id="badge-water">
+                                <div class="badge-icon">💧</div>
+                                <div class="badge-title">Hidratação</div>
+                            </div>
+                            <div class="badge-item badge-orange" id="badge-workout">
+                                <div class="badge-icon">💪</div>
+                                <div class="badge-title">Foco no Treino</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card span-2">
+                        <h3 class="workout-title">Registrar Peso Atual</h3>
+                        <div class="chat-input-row">
+                            <input type="number" id="input-log-weight" class="form-input" placeholder="Novo peso em kg" step="0.1">
+                            <button class="btn-primary btn-send" onclick="logNewWeight()">Registrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. COACH AI (ASSISTENTE VIRTUAL) -->
+            <div id="page-coach" class="page">
+                <h2 class="section-title">Coach AI - Treinador Virtual</h2>
+                <p class="section-subtitle">Tire dúvidas sobre treinos, nutrição e hábitos saudáveis.</p>
+
+                <div class="chat-container">
+                    <div class="chat-box" id="chat-box">
+                        <div class="chat-msg bot">
+                            Olá! Sou seu assistente de saúde e treinos. Como posso ajudar você a atingir seus objetivos hoje?
+                        </div>
+                    </div>
+
+                    <div class="chat-input-row">
+                        <input type="text" id="chat-input" class="form-input" placeholder="Escreva sua pergunta..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+                        <button class="btn-primary btn-send" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+
+                    <div class="disclaimer-box">
+                        <i class="fa-solid fa-user-doctor"></i>
+                        <span>O Coach AI oferece orientações educativas. Para prescrições individualizadas, consulte um profissional de saúde.</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL REGISTRO RÁPIDO (+ FAB) -->
+    <div class="modal" id="quick-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Registrar Atividade</h3>
+                <i class="fa-solid fa-xmark modal-close" onclick="toggleModal(false)"></i>
+            </div>
+            <div class="quick-actions-grid">
+                <div class="action-card" onclick="addWater(250); toggleModal(false);">
+                    <i class="fa-solid fa-droplet icon-blue"></i>
+                    <span>+250ml Água</span>
+                </div>
+                <div class="action-card" onclick="switchPage('page-workout'); toggleModal(false);">
+                    <i class="fa-solid fa-dumbbell icon-green"></i>
+                    <span>Treino</span>
+                </div>
+                <div class="action-card" onclick="switchPage('page-evolution'); toggleModal(false);">
+                    <i class="fa-solid fa-weight-scale icon-orange"></i>
+                    <span>Novo Peso</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Externo -->
+    <script src="script.js"></script>
+
+    <!-- Registo do Service Worker para PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registado com sucesso!', reg))
+                    .catch(err => console.error('Falha ao registar o Service Worker:', err));
+            });
+        }
+    </script>
+</body>
+</html>
